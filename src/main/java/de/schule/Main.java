@@ -1,4 +1,7 @@
+package de.schule;
 import java.sql.*;
+import org.json.JSONObject;
+import java.nio.file.*;
 
 public class Main {
 
@@ -15,6 +18,8 @@ public class Main {
         String sql = "SELECT * FROM persons";
 
         runQuery(sql);
+
+        readjson("H:/Materialien/LF08/lf8-db-minimal/src/main/resources/json_import_testing/beispiel.json");
     }
 
     // Führt ein SELECT aus und gibt die Tabelle in der Konsole aus
@@ -69,5 +74,14 @@ public class Main {
         if (!any) {
             System.out.println("(Keine Zeilen)");
         }
+    }
+
+    private static void readjson(String filename) {
+        String text = Files.readString(Path.of(filename));
+        JSONObject jsonobj = new JSONObject(text);
+
+        System.out.println(jsonobj.getString("firstName"));
+        System.out.println(jsonobj.getString("lastName"));
+        System.out.println(jsonobj.getString("email"));
     }
 }
