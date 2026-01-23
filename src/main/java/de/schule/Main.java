@@ -1,5 +1,7 @@
 package de.schule;
 import java.sql.*;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 import java.nio.file.*;
 
@@ -17,9 +19,10 @@ public class Main {
         //String sql = "SELECT COUNT(*) AS anzahl FROM persons";
         String sql = "SELECT * FROM persons";
 
+
         runQuery(sql);
 
-        readjson("H:/Materialien/LF08/lf8-db-minimal/src/main/resources/json_import_testing/beispiel.json");
+        readjson("C:/Users/f.grinstein/IdeaProjects/lf8-db-minimal/src/main/resources/json_import_testing/beispiel.json");
     }
 
     // Führt ein SELECT aus und gibt die Tabelle in der Konsole aus
@@ -77,11 +80,26 @@ public class Main {
     }
 
     private static void readjson(String filename) {
-        String text = Files.readString(Path.of(filename));
-        JSONObject jsonobj = new JSONObject(text);
+        try {
+            String text = Files.readString(Path.of(filename));
+            JSONArray person = new JSONArray(text);
 
-        System.out.println(jsonobj.getString("firstName"));
-        System.out.println(jsonobj.getString("lastName"));
-        System.out.println(jsonobj.getString("email"));
+            for (int i = 0; i < person.length(); i++) {
+                JSONObject p = person.getJSONObject(i);
+
+            String firstName = p.getString("firstName");
+            String lastName  = p.getString("lastName");
+            String email     = p.getString("email");
+
+            String sqlJSON = "INSERT INTO persons (first_name, last_name, email) VALUES ('"+ firstName + "', '" + lastName + "', '" + email + "')";
+            runQuery(sqlJSON);
+
+            }
+
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
     }
 }
