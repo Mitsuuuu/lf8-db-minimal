@@ -1,14 +1,18 @@
 package de.schule;
+import java.io.FileReader;
 import java.sql.*;
 
+import com.opencsv.CSVReader;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.nio.file.*;
+import java.util.List;
 
 public class Main {
 
     // ====== 1) DB-Zugangsdaten (ggf. anpassen) ======
-    private static final String URL  = "jdbc:mariadb://localhost:3306/lf8_converter";
+    private static final String URL = "jdbc:mariadb://localhost:3306/lf8_converter";
     private static final String USER = "root";
     private static final String PASS = ""; // XAMPP häufig leer: ""
 
@@ -23,6 +27,10 @@ public class Main {
         runQuery(sql);
 
         readjson("C:/Users/f.grinstein/IdeaProjects/lf8-db-minimal/src/main/resources/json_import_testing/beispiel.json");
+
+        //Funktioniert noch nicth
+        //readCSV("C:/Users/f.grinstein/IdeaProjects/lf8-db-minimal/src/main/resources/csv_file/csv_testing.csv");
+
     }
 
     // Führt ein SELECT aus und gibt die Tabelle in der Konsole aus
@@ -79,6 +87,7 @@ public class Main {
         }
     }
 
+    // Parsen der JSON Datei
     private static void readjson(String filename) {
         try {
             String text = Files.readString(Path.of(filename));
@@ -87,19 +96,38 @@ public class Main {
             for (int i = 0; i < person.length(); i++) {
                 JSONObject p = person.getJSONObject(i);
 
-            String firstName = p.getString("firstName");
-            String lastName  = p.getString("lastName");
-            String email     = p.getString("email");
+                String firstName = p.getString("firstName");
+                String lastName = p.getString("lastName");
+                String email = p.getString("email");
 
-            String sqlJSON = "INSERT INTO persons (first_name, last_name, email) VALUES ('"+ firstName + "', '" + lastName + "', '" + email + "')";
-            runQuery(sqlJSON);
+                String sqlJSON = "INSERT INTO persons (first_name, last_name, email) VALUES ('" + firstName + "', '" + lastName + "', '" + email + "')";
+                runQuery(sqlJSON);
 
             }
-
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-
     }
+
+    /* nicht funktionsfähig
+    private static void readCSV(String CSV_filename) {
+            CSVReader reader = new CSVReader(new FileReader(Path.of(csv_filename)));
+            List<String[]> csv_person = reader.readAll();
+
+            for (String[] row : csv_person) {
+
+                String firstName = row[0]; // first column
+                String lastName  = row[1]; // second column
+                String email     = row[2]; // third column
+
+                System.out.println(firstName + " | " + lastName + " | " + email);
+
+                //String sqlJSON = "INSERT INTO persons (first_name, last_name, email) " + "VALUES ('" + firstName + "', '" + lastName + "', '" + email + "')";
+                // runQuery(sqlJSON);
+
+            }
+            reader.close();
+        }
+*/
 }
