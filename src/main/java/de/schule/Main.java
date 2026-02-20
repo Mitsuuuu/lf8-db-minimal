@@ -1,8 +1,11 @@
 package de.schule;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.sql.*;
 
 import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -16,21 +19,18 @@ public class Main {
     private static final String USER = "root";
     private static final String PASS = ""; // XAMPP häufig leer: ""
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, CsvException {
 
         // ====== 2) HIER SQL-Befehl eintragen ======
         // Tipp für den Anfang: Erstmal nur COUNT(*)
         //String sql = "SELECT COUNT(*) AS anzahl FROM persons";
         String sql = "SELECT * FROM persons";
 
-
         runQuery(sql);
 
-        readjson("C:/Users/f.grinstein/IdeaProjects/lf8-db-minimal/src/main/resources/json_import_testing/beispiel.json");
+        readjson("src/main/resources/json_import_testing/beispiel.json");
 
-        //Funktioniert noch nicth
-        //readCSV("C:/Users/f.grinstein/IdeaProjects/lf8-db-minimal/src/main/resources/csv_file/csv_testing.csv");
-
+        readCSV("src/main/resources/csv_file/csv_testing.csv");
     }
 
     // Führt ein SELECT aus und gibt die Tabelle in der Konsole aus
@@ -110,24 +110,26 @@ public class Main {
         }
     }
 
-    /* nicht funktionsfähig
-    private static void readCSV(String CSV_filename) {
-            CSVReader reader = new CSVReader(new FileReader(Path.of(csv_filename)));
-            List<String[]> csv_person = reader.readAll();
+    // Parsen der CSV-Datei
+    private static void readCSV(String csv_filename) throws IOException{
+            try (CSVReader reader = new CSVReader(new FileReader((csv_filename)))){
 
-            for (String[] row : csv_person) {
+                List<String[]> csv_person = reader.readAll();
 
-                String firstName = row[0]; // first column
-                String lastName  = row[1]; // second column
-                String email     = row[2]; // third column
+                for (String[] row : csv_person) {
+                    String firstName = row[0]; // first column
+                    String lastName  = row[1]; // second column
+                    String email     = row[2]; // third column
 
-                System.out.println(firstName + " | " + lastName + " | " + email);
+                    System.out.println(firstName + " | " + lastName + " | " + email);
 
-                //String sqlJSON = "INSERT INTO persons (first_name, last_name, email) " + "VALUES ('" + firstName + "', '" + lastName + "', '" + email + "')";
-                // runQuery(sqlJSON);
+                    String sqlJSON = "INSERT INTO persons (first_name, last_name, email) " + "VALUES ('" + firstName + "', '" + lastName + "', '" + email + "')";
+                    runQuery(sqlJSON);
+                }
 
-            }
-            reader.close();
-        }
-*/
+            } catch (CsvException e){
+                throw new RuntimeException(e);
+                }
+    }
+
 }
