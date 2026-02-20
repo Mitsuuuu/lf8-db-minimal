@@ -138,15 +138,16 @@ public class Main {
         int input  = sc.nextInt();
         switch (input){
             case 1:
-                readCSV()
+                readCSV();
                 break;
             case 2:
-                readjson()
+                readjson();
                 break;
             case 3:
                 printResultSet();
                 break;
-            default;
+            case default:
+                break;
         }
     }
 }
