@@ -3,6 +3,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.sql.*;
+import java.util.Scanner;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
@@ -131,5 +132,21 @@ public class Main {
                 throw new RuntimeException(e);
                 }
     }
-
+    public static  void User_input(){
+        System.out.println("Für CSV Datei einlesen: 1\n Für JSON Datei einlesen: 2\n Für DB ausgabe: 3");
+        Scanner sc = new Scanner(System.in);
+        int input  = sc.nextInt();
+        switch (input){
+            case 1:
+                readCSV()
+                break;
+            case 2:
+                readjson()
+                break;
+            case 3:
+                printResultSet();
+                break;
+            default;
+        }
+    }
 }
