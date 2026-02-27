@@ -1,7 +1,6 @@
 package de.schule;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.sql.*;
 import java.util.Scanner;
 
@@ -20,18 +19,8 @@ public class Main {
     private static final String USER = "root";
     private static final String PASS = ""; // XAMPP häufig leer: ""
 
-    public static void main(String[] args) throws IOException, CsvException {
-
-        // ====== 2) HIER SQL-Befehl eintragen ======
-        // Tipp für den Anfang: Erstmal nur COUNT(*)
-        //String sql = "SELECT COUNT(*) AS anzahl FROM persons";
-        String sql = "SELECT * FROM persons";
-
-        runQuery(sql);
-
-        readjson("src/main/resources/json_import_testing/beispiel.json");
-
-        readCSV("src/main/resources/csv_file/csv_testing.csv");
+    public static void main(String[] args) throws IOException{
+        User_input();
     }
 
     // Führt ein SELECT aus und gibt die Tabelle in der Konsole aus
@@ -132,21 +121,25 @@ public class Main {
                 throw new RuntimeException(e);
                 }
     }
-    public static  void User_input(){
+    public static  void User_input() throws IOException {
         System.out.println("Für CSV Datei einlesen: 1\n Für JSON Datei einlesen: 2\n Für DB ausgabe: 3");
         Scanner sc = new Scanner(System.in);
         int input  = sc.nextInt();
+        String filename = null;
+        if(input == 1 || input == 2) {
+            filename = sc.next();
+        }
         switch (input){
             case 1:
-                readCSV();
+                readCSV(filename);
                 break;
             case 2:
-                readjson();
+                readjson(filename);
                 break;
             case 3:
-                printResultSet();
+                runQuery("SELECT * FROM persons");
                 break;
-            case default:
+            default:
                 break;
         }
     }
